@@ -25,6 +25,12 @@
           <div class="controls" id="editor"><textarea id="body" value="" class="input-xlarge">{{body}}</textarea></div>
         </div>
         {{#if categoriesEnabled}}
+		<div class="control-group">
+           <label class="control-label">Location</label>
+           {{#constant}}<div id="location-picker" class="controls" style="height: 400px"></div>{{/constant}}
+           <div class="controls"><input id="locLat" type="hidden" value="" /></div>
+           <div class="controls"><input id="locLong" type="hidden" value="" /></div>
+        </div>
         <div class="control-group post-form-category">
           <label class="control-label">{{i18n "Categories"}}</label>
           <div class="controls">

@@ -2050,3 +2050,67 @@ table {
         /* line 222, ../sass/partials/_mobile.scss */
         .post .post-actions li a .action {
           display: none; } }
+
+/* Custom CSS - MAKE ALL CHANGES BELOW */
+
+.more-button:first-child a {
+  margin-right: 10px;
+}
+
+.more-button a {
+  width: 49%;
+  float: left;
+}
+
+.post-actions, .leaflet-popup .post-message, .leaflet-popup .post-rank {
+  display: none;
+}
+
+.leaflet-popup .post-content {
+  margin-right: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.big {
+  font-size: 3em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.cat-selector .more-button {
+  padding-bottom: 0;
+}
+
+.cat-selector .more-button a {
+  margin-right: 6px;
+}
+
+.content-wrapper {
+  top: 80px;
+}
+
+.list {
+  float: left;
+  width: 28%;
+  margin-right: 0;
+}
+
+#map.grid {
+  margin: 0;
+  margin-left: 41%;
+  width: 46%;
+  position: fixed;
+  top: 80px;
+  bottom: 0;
+}
+
+.post-content {
+  margin-right: 10px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  z-index: 10;
+}

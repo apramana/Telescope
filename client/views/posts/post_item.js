@@ -1,5 +1,49 @@
 Template.post_item.created = function () {
   instance = this;
+
+
+  var post = this.data;
+  
+  if(!isNaN(post.locLat) && !isNaN(post.locLong)){
+    mkr = L.marker([post.locLat, post.locLong], {'riseOnHover': true});
+    
+    if(typeof Template.posts_list.mapPopups === 'undefined'){
+      Template.posts_list.mapPopups = {};
+    }
+    if(typeof ThumbsFS.findOne({'filename': post._id}) !== 'undefined'){
+      ThumbsFS.retrieveBlob(ThumbsFS.findOne({'filename': post._id})._id, function(file){
+        var reader = new FileReader();
+        reader.onload = function() {
+          console.log(reader.result);
+          var img = document.createElement('img');
+          img.src = reader.result;
+          img.style.width = '180px';
+          Template.posts_list.mapPopups[post._id] = L.popup().setLatLng([post.locLat, post.locLong]).setContent(img);
+        };
+        reader.readAsDataURL(file.blob);
+      });
+    }
+      
+    mkr.setIcon(getMarkerIcon(post)); // TODO: replace personal URL with relpath
+      
+    mkr.on('click', (function(e){
+      Session.set('selectedMkr', post._id);
+      $('html, body').animate({
+        scrollTop: $('#'+post._id).offset().top-80
+      });
+    }), this);
+
+    if(typeof Template.posts_list.mapMarkers === 'undefined'){
+      Template.posts_list.mapMarkers = {};
+    }
+    Template.posts_list.mapMarkers[post._id] = mkr;
+  }
+};
+
+Template.post_item.destroyed = function () {
+  if(Template.posts_list.createdLeaflet)
+    leafletMap.removeLayer(Template.posts_list.mapMarkers[this.data._id]);
+  delete Template.posts_list.mapMarkers[this.data._id];
 };
 
 Template.post_item.helpers({
@@ -75,6 +119,12 @@ Template.post_item.helpers({
   },
   pointsUnitDisplayText: function(){
     return this.votes == 1 ? i18n.t('point') : i18n.t('points');
+  },
+  locLat: function(){
+    return this.locLat;
+  },
+  locLong: function(){
+    return this.locLong;
   }
 });
 
@@ -132,5 +182,14 @@ Template.post_item.events({
     $this.toggleClass("active");
     $share.toggleClass("hidden");
     $share.find('.share-replace').sharrre(SharrreOptions);
+  },
+  'click .post-title': function(e){
+    Meteor.call('clickedPost', this, Session.get('sessionId'), function(error, result){
+      if(error)
+        console.log(error);
+    });
+  },
+  'mouseover': function(e){
+    Session.set('selectedMkr', this._id);
   }
 });

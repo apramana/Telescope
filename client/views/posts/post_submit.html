@@ -1,5 +1,8 @@
 <template name="post_submit">
   <div class="grid submit">
+
+  {{#if catId}}
+
     <form class="grid-block form-horizontal">
       {{#constant}}
       <div class="control-group">
@@ -14,18 +17,19 @@
         <label class="control-label">{{i18n "Body"}}</label>
         <div class="controls" id="editor"><textarea id="body" value="" class="input-xlarge"/></div>
       </div>
-      {{#if categoriesEnabled}}
       <div class="control-group">
-        <label class="control-label">{{i18n "Category"}}</label>
+        <label class="control-label">Location</label>
+         {{#constant}}<div id="location-picker" class="controls" style="height: 400px"></div>{{/constant}}
+        <div class="controls"><input id="locLat" type="hidden" value="" /></div>
+        <div class="controls"><input id="locLong" type="hidden" value="" /></div>
+        <label class="control-label"></label>
         <div class="controls">
-          {{#each categories}}
           <label class="radio inline">
-            <input id="category_{{_id}}" type="checkbox" value="{{_id}}" name="category" /> {{name}}
+            <input id="category_{{catId}}" type="radio" value="{{catId}}" name="category" style="display: none" checked="checked" />
           </label>
-          {{/each}}
         </div>
       </div>
-      {{/if}}
+      
       {{/constant}}
       {{#if isAdmin}}
         {{#constant}}
@@ -69,5 +73,31 @@
         <input type="submit" value="{{i18n "Submit"}}" />
       </div>
     </form>
+  {{else}}
+    <div class="cat-selector">
+      <h2 class="big">What type of post is this?</h2>
+      <div class="grid more-button">
+        <h2><a class="more-link" href="/submit/news">a news article</a></h2>
+      </div>
+      <div class="grid more-button">
+        <h2><a class="more-link" href="/submit/events">an event</a></h2>
+      </div>
+      <div style="clear:both"></div>
+      <div class="grid more-button">
+        <h2><a class="more-link" href="/submit/causes">a group-funding effort</a></h2>
+      </div>
+      <div class="grid more-button">
+        <h2><a class="more-link" href="/submit/pics">an image</a></h2>
+      </div>
+      <div style="clear:both"></div>
+      <div class="grid more-button">
+        <h2><a class="more-link" href="/submit/vids">a video</a></h2>
+      </div>
+      <div class="grid more-button">
+        <h2><a class="more-link" href="/submit/stories">a blog post</a></h2>
+      </div>
+      <div style="clear:both"></div>
+    </div>
+  {{/if}}
   </div>
 </template>

@@ -1,3 +1,5 @@
+Template.post_submit.createLeaflet = false;
+
 Template.post_submit.helpers({
   categoriesEnabled: function(){
     return Categories.find().count();
@@ -17,6 +19,10 @@ Template.post_submit.helpers({
   }
 });
 
+Template.post_submit.created = function(){
+   Template.post_submit.createLeaflet = true;
+}
+
 Template.post_submit.rendered = function(){
   Session.set('selectedPostId', null);
   if(!this.editor && $('#editor').exists())
@@ -26,6 +32,29 @@ Template.post_submit.rendered = function(){
   });
 
   $("#postUser").selectToAutocomplete();
+  
+  if(Template.post_submit.createLeaflet){
+      L.Icon.Default.imagePath = '/packages/leaflet/images';
+      leafletMap = L.map('location-picker').setView([37.76, -122.45], 11);
+
+	   L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+		   maxZoom: 18,
+		   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+	   }).addTo(leafletMap);
+      Template.post_submit.createLeaflet = false;
+   }
+
+	leafletMap.on('click', function(e){
+      if(typeof marker != 'undefined'){
+         leafletMap.removeLayer(marker);
+      }
+      marker = L.marker();
+      marker.setLatLng(e.latlng);
+      marker.addTo(leafletMap);
+
+		$('#locLat').val(e.latlng.lat);
+		$('#locLong').val(e.latlng.lng);
+	});
 
 }
 
@@ -44,6 +73,8 @@ Template.post_submit.events({
     var url = $('#url').val();
     var shortUrl = $('#short-url').val();
     var body = instance.editor.exportFile();
+    var locLat = parseFloat($('#locLat').val());
+    var locLong = parseFloat($('#locLong').val());
     var categories=[];
     var sticky=!!$('#sticky').attr('checked');
     var submitted = $('#submitted_hidden').val();
@@ -57,6 +88,8 @@ Template.post_submit.events({
     var properties = {
         headline: title
       , body: body
+      , locLat: locLat
+      , locLong: locLong
       , shortUrl: shortUrl
       , categories: categories
       , sticky: sticky

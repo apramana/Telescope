@@ -9,7 +9,7 @@ Posts.deny({
     if(isAdminById(userId))
       return false;
     // deny the update if it contains something other than the following fields
-    return (_.without(fieldNames, 'headline', 'url', 'body', 'shortUrl', 'shortTitle', 'categories').length > 0);
+    return (_.without(fieldNames, 'headline', 'url', 'body', 'locLat', 'locLong', 'shortUrl', 'shortTitle', 'categories').length > 0);
   }
 });
 
@@ -25,6 +25,8 @@ Meteor.methods({
   post: function(post){
     var headline = cleanUp(post.headline),
         body = cleanUp(post.body),
+        locLat = parseFloat(post.locLat),
+        locLong = parseFloat(post.locLong),
         user = Meteor.user(),
         userId = user._id,
         submitted = parseInt(post.submitted) || new Date().getTime(),
@@ -49,6 +51,14 @@ Meteor.methods({
     if(!post.headline)
       throw new Meteor.Error(602, i18n.t('Please fill in a headline'));
 
+    // check that user provided a location
+    if(isNaN(locLat) || isNaN(locLong))
+      throw new Meteor.Error(607, i18n.t('Please provide a location'));
+
+    // check that user provided a location
+    if(parseInt(post.categories.length) !== 1)
+      throw new Meteor.Error(608, i18n.t('Please provide one category'));
+
     // check that there are no previous posts with the same link
     if(post.url && (typeof postWithSameLink !== 'undefined')){
       Meteor.call('upvotePost', postWithSameLink);
@@ -68,6 +78,8 @@ Meteor.methods({
     post = _.extend(post, {
       headline: headline,
       body: body,
+      locLat: locLat,
+      locLong: locLong,
       userId: userId,
       author: getDisplayNameById(userId),
       createdAt: new Date().getTime(),
@@ -85,6 +97,8 @@ Meteor.methods({
     }
 
     postId = Posts.insert(post);
+
+    Meteor.call('createThumbnail', postId, post.url);
 
     // increment posts count
     Meteor.users.update({_id: userId}, {$inc: {postCount: 1}});

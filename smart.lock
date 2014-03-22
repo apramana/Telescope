@@ -12,7 +12,9 @@
       "iron-router": {},
       "nprogress": {},
       "fast-render": {},
-      "spin": {}
+      "spin": {},
+      "leaflet": {},
+      "collectionFS": {}
     },
     "packages": {
       "momentjs": {
@@ -54,6 +56,21 @@
         "git": "https://github.com/SachaG/meteor-spin.git",
         "tag": "v0.2.2",
         "commit": "3f655f0016228e4195acc784c45d3e3a247dc39f"
+      },
+      "leaflet": {
+        "git": "https://github.com/bevanhunt/meteor-leaflet.git",
+        "tag": "v0.1.8",
+        "commit": "8a3d0f53734e4fe3efc3e6e39aa3da0209e2ec8e"
+      },
+      "collectionFS": {
+        "git": "https://github.com/raix/Meteor-CollectionFS.git",
+        "tag": "v0.3.6",
+        "commit": "e28922685d07fc2bd17e23571eeb050cd85176f7"
+      },
+      "cfs-public-folder": {
+        "git": "https://github.com/nooitaf/meteor-cfs-public-folder.git",
+        "tag": "v0.0.3",
+        "commit": "581c716424b374efb6f611110002621f9cc9212b"
       }
     }
   }

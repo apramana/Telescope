@@ -10,6 +10,8 @@
     "iron-router": {},
     "nprogress": {},
     "fast-render": {},
-    "spin": {}
+    "spin": {},
+    "leaflet": {},
+    "collectionFS": {}
   }
 }

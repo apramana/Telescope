@@ -2,11 +2,19 @@
 	<div class="posts grid list">
 		{{#each posts}}
 			{{> post_item}}
+    {{else}}
+      <p>No posts found in this area.</p>
 		{{/each}}
+    {{#if hasPrevPosts}}
+    <div class="grid more-button">
+      <a class="more-link" href="{{loadPrevUrl}}">&lt; Previous</a>
+    </div>
+    {{/if}}
+    {{#if hasMorePosts}}
+    <div class="grid more-button">
+      <a class="more-link" href="{{loadMoreUrl}}">Next &gt;</a>
+    </div>
+    {{/if}}
 	</div>
-  {{#if hasMorePosts}}
-  	<div class="grid more-button">
-  		<a class="more-link" href="{{loadMoreUrl}}">{{i18n "Load more"}}</a>
-  	</div>
-  {{/if}}
+  {{#constant}}<div id="map" class="grid"></div><div style="clear:both"></div>{{/constant}}
 </template>

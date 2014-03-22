@@ -5,8 +5,11 @@
 //    '[name]': function(node) { return node.getAttribute('name');}
 // });
 
+Template.post_edit.createLeaflet = false;
+
 Template.post_edit.created = function(){
   post = Posts.findOne(this.data.postId);
+  Template.post_edit.createLeaflet = true;
 }
 
 Template.post_edit.helpers({
@@ -72,7 +75,35 @@ Template.post_edit.rendered = function(){
   }
 
   $("#postUser").selectToAutocomplete();
+    
+   if(Template.post_edit.createLeaflet){
+      L.Icon.Default.imagePath = '/packages/leaflet/images';
+      leafletMap = L.map('location-picker').setView([37.76, -122.45], 11);
 
+	   L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+		   maxZoom: 18,
+		   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+	   }).addTo(leafletMap);
+      Template.post_edit.createLeaflet = false;
+   }
+
+   if(!isNaN(post.locLat) && !isNaN(post.locLong)){
+     marker = L.marker();
+     marker.setLatLng([post.locLat, post.locLong]);
+     marker.addTo(leafletMap);
+   }
+
+	leafletMap.on('click', function(e){
+      if(typeof marker != 'undefined'){
+         leafletMap.removeLayer(marker);
+      }
+      marker = L.marker();
+      marker.setLatLng(e.latlng);
+      marker.addTo(leafletMap);
+
+		$('#locLat').val(e.latlng.lat);
+		$('#locLong').val(e.latlng.lng);
+	});
 }
 
 Template.post_edit.events({
@@ -99,6 +130,8 @@ Template.post_edit.events({
       headline:         $('#title').val(),
       shortUrl:         shortUrl,
       body:             instance.editor.exportFile(),
+      locLat:           parseFloat($('#locLat').val()),
+      locLong:          parseFloat($('#locLong').val()),
       categories:       categories,
     };
 

@@ -21,3 +21,6 @@ nprogress
 telescope-i18n
 fast-render
 spin
+leaflet
+collectionFS
+http
